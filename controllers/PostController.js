@@ -18,6 +18,42 @@ export const getLastTags = async (req, res) => {
   }
 };
 
+export const getQR = async (req, res) => {
+  try {
+    const postId = req.params.id;
+
+    PostModel.findOneAndUpdate(
+      {
+        _id: postId,
+      },
+      {
+        returnDocument: 'after',
+      },
+      (err, doc) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            message: 'Не удалось вернуть QR-код',
+          });
+        }
+
+        if (!doc) {
+          return res.status(404).json({
+            message: 'QR-код не найден',
+          });
+        }
+
+        res.json(doc);
+      },
+    ).populate('user');
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить статьи',
+    });
+  }
+};
+
 export const getAll = async (req, res) => {
   try {
     const posts = await PostModel.find().populate('user').exec();
