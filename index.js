@@ -12,7 +12,7 @@ import { handleValidationErrors, checkAuth } from './utils/index.js';
 import { UserController, PostController } from './controllers/index.js';
 
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect('mongodb+srv://minato:SeBRFhlVfvgx4Cjp@sweet-memories.zs7pf.mongodb.net/blog?retryWrites=true&w=majority')
   .then(() => console.log('DB ok'))
   .catch((err) => console.log('DB error', err));
 
@@ -42,7 +42,7 @@ app.get('/auth/me', checkAuth, UserController.getMe);
 
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
   res.json({
-    url: `/uploads/${req.file.originalname}`,
+    url: `uploads/${req.file.originalname}`,
   });
 });
 
@@ -61,7 +61,7 @@ app.patch(
   PostController.update,
 );
 
-app.listen(process.env.PORT || 4444, (err) => {
+app.listen(4444, (err) => {
   if (err) {
     return console.log(err);
   }
