@@ -11,6 +11,7 @@ import { handleValidationErrors, checkAuth } from './utils/index.js';
 
 import { UserController, PostController } from './controllers/index.js';
 
+console.log(process.env.MONGODB_URI, process.env.PORT)
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log('DB ok'))
@@ -40,10 +41,12 @@ app.post('/auth/login', loginValidation, handleValidationErrors, UserController.
 app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
 app.get('/auth/me', checkAuth, UserController.getMe);
 
-app.post('/upload', checkAuth, upload.array('image', 10), (req, res) => {
-  // res.json({
-  //   url: `/uploads/${req.file.originalname}`,
-  // });
+app.post('/upload', checkAuth, upload.array('image', 2), (req, res) => {
+  const response = {urls: []}
+  Array.from(req.files).forEach( file => {
+    response.urls.push(`/uploads/${file.originalname}`)
+  })
+  res.json(response);
 });
 
 app.get('/posts', checkAuth, PostController.getAll);
